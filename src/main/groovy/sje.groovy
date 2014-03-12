@@ -25,8 +25,10 @@ final PAD_LENGTH_2              = 24
 final VERSION_INFO              = 'Swagger JSON Exporter version "1.0.0.20140217"'
 
 // default values
-final API_DOCS_URL              = 'http://localhost:8080/api/api-docs'
-final STATIC_SUB_API_DOCS_URL   = 'http://localhost:8080/apispec/listing'
+final API_DOCS_PATH             = 'api-docs'
+final API_DOCS_URL              = "http://localhost:8080/api/$API_DOCS_PATH"
+final STATIC_SUB_API_DOCS_PATH  = 'listing'
+final STATIC_SUB_API_DOCS_URL   = "http://localhost:8080/apispec/$STATIC_SUB_API_DOCS_PATH"
 final OUTPUT_DIR                = 'output'
 
 
@@ -112,7 +114,7 @@ if (!apiDocs.apis) {
     apiDocs.apis.each { it.path = "$staticSubApiDocsUrl/${it.path}" }
     def staticApiDocsJson = new JsonBuilder(apiDocs).toPrettyString()
     // output api-docs
-    def staticApiDocsFile = "$outputDir/api-docs" as File
+    def staticApiDocsFile = "$outputDir/$API_DOCS_PATH" as File
     staticApiDocsFile.parentFile.mkdirs() // insure the output dir is existed
     staticApiDocsFile.withWriter {
         def writer = it as BufferedWriter
@@ -121,11 +123,12 @@ if (!apiDocs.apis) {
     }
 
     // sub-apis
+    def staticSubApiDocsPath = staticSubApiDocsUrl.tokenize('/')[-1]
     withPool(min(subApiDocs.val.size(), Runtime.runtime.availableProcessors())) {
         subApiDocs.val.eachParallel { subApiDoc ->
             def staticSubApiDocJson = new JsonBuilder(subApiDoc).toPrettyString()
             def resPath = subApiDoc.resourcePath
-            def subApiDocFile = "$outputDir/listing/$resPath" as File
+            def subApiDocFile = "$outputDir/$staticSubApiDocsPath/$resPath" as File
             subApiDocFile.parentFile.mkdirs()
             subApiDocFile.withWriter {
                 def writer = it as BufferedWriter
