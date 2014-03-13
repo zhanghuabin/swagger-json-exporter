@@ -18,7 +18,7 @@ This is an utility to use to export the JSON of Swagger API docs from web site t
 
     Copy sje.groovy to any location, then run:
 
-        ./sje.groovy -u http://petstore.swagger.wordnik.com/api/api-docs -su http://localhost:8080/apispec/listing -o /tmp/swagger-api-docs -il pet
+        ./sje.groovy -u http://petstore.swagger.wordnik.com/api/api-docs -su http://localhost:8080/apispec/listings -o /tmp/swagger-api-docs -il pet
 
     You'll get a subset of petstore APIs which includes only /pet path.
 
