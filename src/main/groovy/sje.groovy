@@ -22,7 +22,7 @@ final PAD_LENGTH_1              = 60
 final PAD_LENGTH_2              = 24
 
 // version info
-final VERSION_INFO              = 'Swagger JSON Exporter version "1.0.0.20140217"'
+final VERSION_INFO              = 'Swagger JSON Exporter version "1.0.0.20140312"'
 
 // default values
 final API_DOCS_PATH             = 'api-docs'
