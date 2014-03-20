@@ -73,15 +73,15 @@ def outputDir               = options.o     ?: conf?.outputDir              ?: O
 def includeList             = options.ils   ?: conf?.includeList            ?: null
 
 // print options summary
-def optionsSummary =
-"""${''.padRight PAD_LENGTH_1, '-'}
+def optionsSummary = /
+${''.padRight PAD_LENGTH_1, '-'}
 |${"$VERSION_INFO".center PAD_LENGTH_1-2}|
 ${''.padRight PAD_LENGTH_1, '-'}
 ${'apiDocsUrl'.padRight PAD_LENGTH_2} = $apiDocsUrl
 ${'staticSubApiDocsUrl'.padRight PAD_LENGTH_2} = $staticSubApiDocsUrl
 ${'outputDir'.padRight PAD_LENGTH_2} = ${(outputDir as File).absolutePath}
-${'includeList'.padRight PAD_LENGTH_2} = ${includeList ? includeList.join(',') : null }
-"""
+${'includeList'.padRight PAD_LENGTH_2} = ${includeList ? includeList.join(',') : null }/
+
 println optionsSummary
 
 
@@ -100,7 +100,8 @@ if (!apiDocs.apis) {
 
     def subApiDocs = agent([])
 
-    withPool(min(apiDocs.apis.size(), Runtime.runtime.availableProcessors())) {
+    def coreNum = Runtime.runtime.availableProcessors()
+    withPool(min(apiDocs.apis.size(), coreNum)) {
         apiDocs.apis.eachParallel { api ->
             def subApiDocHttp = ["$apiDocsUrl/${api.path}"] as HTTPBuilder
             def subApiDoc = subApiDocHttp.get([:])
@@ -124,7 +125,7 @@ if (!apiDocs.apis) {
 
     // sub-apis
     def staticSubApiDocsPath = staticSubApiDocsUrl.tokenize('/')[-1]
-    withPool(min(subApiDocs.val.size(), Runtime.runtime.availableProcessors())) {
+    withPool(min(subApiDocs.val.size(), coreNum)) {
         subApiDocs.val.eachParallel { subApiDoc ->
             def staticSubApiDocJson = new JsonBuilder(subApiDoc).toPrettyString()
             def resPath = subApiDoc.resourcePath
