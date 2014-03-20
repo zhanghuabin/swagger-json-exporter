@@ -1,7 +1,7 @@
 #!/bin/env groovy
 
 @Grapes([
-    @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
+    @Grab('org.codehaus.groovy.modules.http-builder:http-builder:0.7.1')
 ])
 
 import groovy.json.JsonBuilder
